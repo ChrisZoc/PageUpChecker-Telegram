@@ -3,6 +3,8 @@
 from urllib.request import Request, urlopen
 from urllib.error import URLError, HTTPError
 import telegram
+import certifi
+import ssl
 
 def nonblank_lines(f):
     for l in f:
@@ -50,7 +52,9 @@ def main():
         alias = sites[site]
         req = Request(site)
         try:
-            response = urlopen(req)
+            #gcontext = ssl._create_unverified_context()
+            gcontext = ssl.SSLContext(ssl.PROTOCOL_TLSv1)
+            response = urlopen(req,context=gcontext)
             sendMsg(group_id,'El sitio '+ alias +' está trabajando correctamente')
         except HTTPError as e:
             sendMsg(group_id,'El servidor no pudo completar la petición hacia ' + alias + '.')
